@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhereBNB.Client", "WhereBNB.Client\WhereBNB.Client.csproj", "{A424080B-3E09-42B2-AA55-A57721737AE7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WhereBNB.API", "WhereBNB.API\WhereBNB.API.csproj", "{4D43C460-16EA-4315-B4B2-25564FB3B332}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A424080B-3E09-42B2-AA55-A57721737AE7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A424080B-3E09-42B2-AA55-A57721737AE7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A424080B-3E09-42B2-AA55-A57721737AE7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A424080B-3E09-42B2-AA55-A57721737AE7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4D43C460-16EA-4315-B4B2-25564FB3B332}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D43C460-16EA-4315-B4B2-25564FB3B332}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D43C460-16EA-4315-B4B2-25564FB3B332}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D43C460-16EA-4315-B4B2-25564FB3B332}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal

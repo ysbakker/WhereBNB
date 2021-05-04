@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  db:
+    container_name: wherebnb.db
+    image: mcr.microsoft.com/azure-sql-edge:latest
+    ports:
+      - 1433:1433
+    volumes:
+      - mssql-data:/var/opt/mssql
+      - ./setup.sql:/usr/config/setup.sql
+    env_file:
+      - .env
+    environment:
+      - ACCEPT_EULA=Y
+      - MSSQL_PID=Developer
+      - MSSQL_DB=events_service
+      - MSSQL_DB_AUDIT_LOG=events_service_audit_log
+
+volumes:
+  mssql-data:
