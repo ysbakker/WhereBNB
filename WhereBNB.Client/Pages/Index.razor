@@ -1,7 +1,15 @@
 ﻿@page "/"
+@inject IJSRuntime _jsRuntime
 
-<h1>Hello, asdf!</h1>
+<h1>Map</h1>
 
-Welcome to your new app.
+<div id="mapboxMap" style="width: 100%; height: 400px"></div>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
+@code
+{
+    protected override void OnAfterRender(bool firstRender)
+    {
+        base.OnAfterRender(firstRender);
+        _jsRuntime.InvokeVoidAsync("mapbox.init");
+    }
+}
