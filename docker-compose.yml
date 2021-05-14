@@ -3,6 +3,7 @@ version: '3'
 services:
   db:
     container_name: wherebnb.db
+    restart: unless-stopped
     image: mcr.microsoft.com/azure-sql-edge:latest
     ports:
       - 1433:1433
