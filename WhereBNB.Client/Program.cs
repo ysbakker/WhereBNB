@@ -19,9 +19,11 @@ namespace WhereBNB.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+            builder.Services.AddScoped<ApiAuthorizationMessageHandler>();
+
             builder.Services.AddHttpClient("WhereBNB.API",
-                    client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-                .AddHttpMessageHandler<BaseAddressAuthorizationMessageHandler>();
+                    client => client.BaseAddress = new Uri("https://localhost:5001"))
+                .AddHttpMessageHandler<ApiAuthorizationMessageHandler>();
 
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
                 .CreateClient("WhereBNB.API"));
@@ -30,7 +32,7 @@ namespace WhereBNB.Client
             {
                 builder.Configuration.Bind("AzureAdB2C", options.ProviderOptions.Authentication);
                 options.ProviderOptions.DefaultAccessTokenScopes.Add(
-                    "https://wherebnb.onmicrosoft.com/c1630e05-8a57-4c1d-9d7d-c1dd13514f8b/management");
+                    "https://wherebnb.onmicrosoft.com/f80c0b8e-d0d0-4e42-aa2e-86dd0aa5dd99/management");
                 options.ProviderOptions.LoginMode = "redirect";
             });
 
