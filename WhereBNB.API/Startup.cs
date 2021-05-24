@@ -18,6 +18,7 @@ using Microsoft.IdentityModel.Logging;
 using Microsoft.Net.Http.Headers;
 using Microsoft.OpenApi.Models;
 using WhereBNB.API.Model;
+using WhereBNB.API.Repositories;
 
 namespace WhereBNB.API
 {
@@ -46,10 +47,8 @@ namespace WhereBNB.API
                 options.UseSqlServer(Configuration.GetConnectionString("WhereBNB")));
             
             services.AddControllers();
-            services.AddSwaggerGen(c =>
-            {
-                c.SwaggerDoc("v1", new OpenApiInfo {Title = "WhereBNB.API", Version = "v1"});
-            });
+
+            services.AddScoped<IRepository<Listing>, Repository<Listing>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -59,8 +58,6 @@ namespace WhereBNB.API
             {
                 IdentityModelEventSource.ShowPII = true;
                 app.UseDeveloperExceptionPage();
-                app.UseSwagger();
-                app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WhereBNB.API v1"));
             }
 
             app.UseCors(policy =>
