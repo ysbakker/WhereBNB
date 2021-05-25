@@ -1,4 +1,5 @@
 @page "/authentication/{action}"
+@inject NavigationManager _navigation
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 
 <RemoteAuthenticatorView Action="@Action" />
@@ -6,4 +7,10 @@
 @code {
     [Parameter]
     public string Action { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await Task.Delay(3000);
+        _navigation.NavigateTo("/");
+    }
 }

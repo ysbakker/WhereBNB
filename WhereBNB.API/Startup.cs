@@ -49,6 +49,7 @@ namespace WhereBNB.API
             services.AddControllers();
 
             services.AddScoped<IRepository<Listing>, Repository<Listing>>();
+            services.AddScoped<IRepository<SummaryListing>, Repository<SummaryListing>>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

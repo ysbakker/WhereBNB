@@ -10,7 +10,7 @@ namespace WhereBNB.API.Repositories
     public class Repository<T> : IRepository<T> where T : class
     {
         private WhereBNBContext Context { get; set; }
-        private DbSet<T> Table { get; set; }
+        protected DbSet<T> Table { get; set; }
 
         public Repository(WhereBNBContext context)
         {
@@ -33,7 +33,7 @@ namespace WhereBNB.API.Repositories
             await Table.AddAsync(entity);
         }
 
-        public async Task Update(T entity)
+        public void Update(T entity)
         {
             Table.Attach(entity);
             Context.Entry(entity).State = EntityState.Modified;
