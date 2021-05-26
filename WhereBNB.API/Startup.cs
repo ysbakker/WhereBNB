@@ -46,7 +46,7 @@ namespace WhereBNB.API
             services.AddDbContext<WhereBNBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("WhereBNB")));
             
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson();
 
             services.AddScoped<IRepository<Listing>, Repository<Listing>>();
             services.AddScoped<IRepository<SummaryListing>, Repository<SummaryListing>>();

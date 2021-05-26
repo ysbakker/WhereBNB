@@ -7,7 +7,12 @@
 {
     protected override void OnAfterRender(bool firstRender)
     {
-        base.OnAfterRender(firstRender);
         _jsRuntime.InvokeVoidAsync("mapbox.init");
+    }
+
+    [JSInvokable]
+    public static void MapClicked(int id)
+    {
+        Console.WriteLine($"You clicked {id}");
     }
 }
