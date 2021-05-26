@@ -1,0 +1,10 @@
+@using WhereBNB.Client.Model
+<div>
+    <h5>@Listing.Name</h5>
+    <p>$@Listing.Price</p>
+</div>
+
+@code {
+    [Parameter]
+    public SummaryListing Listing { get; set; }
+}

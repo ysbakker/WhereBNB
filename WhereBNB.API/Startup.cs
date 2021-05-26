@@ -62,9 +62,9 @@ namespace WhereBNB.API
             }
 
             app.UseCors(policy =>
-                policy.WithOrigins("https://localhost:5000", "https://localhost:5001")
+                policy.WithOrigins("https://localhost:5000")
                     .AllowAnyMethod()
-                    .WithHeaders(HeaderNames.ContentType, HeaderNames.Authorization)
+                    .AllowAnyHeader()
                     .AllowCredentials()
             );
 

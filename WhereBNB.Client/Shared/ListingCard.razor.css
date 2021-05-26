@@ -1,0 +1,8 @@
+div {
+    width: 90%;
+    background: #fff;
+    margin-top: 1rem;
+    border-radius: 1rem;
+    padding: 1rem;
+    box-shadow: 3px 3px 5px #eee; 
+}

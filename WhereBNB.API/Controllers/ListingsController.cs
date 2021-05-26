@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using GeoJSON.Net;
 using GeoJSON.Net.Feature;
 using GeoJSON.Net.Geometry;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
 using WhereBNB.API.Model;
 using WhereBNB.API.Repositories;
@@ -46,7 +48,7 @@ namespace WhereBNB.API.Controllers
 
                 return Ok(featureCollection);
             }
-            return Ok(listings);
+            return Ok(listings.Take(100));
         }
 
         [HttpGet("{id}")]

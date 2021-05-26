@@ -69,7 +69,7 @@ window.mapbox = {
 
             map.on('click', 'points', function (e) {
                 const id = e.features[0].properties.Id;
-                DotNet.invokeMethodAsync("WhereBNB.Client", "MapClicked", id);
+                DotNet.invokeMethodAsync("WhereBNB.Client", "PointClicked", id);
             });
             
             map.on('mouseenter', 'points', function () {

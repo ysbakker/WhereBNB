@@ -1,0 +1,30 @@
+@using WhereBNB.Client.Model
+@inject IHttpClientFactory _clientFactory;
+
+<div>
+    @if (Listings == null || Listings.Count != 0)
+    {
+        @foreach (var listing in Listings)
+        {
+            <ListingCard Listing="@listing" />
+        }
+    }
+</div>
+
+
+@code {
+    private List<SummaryListing> Listings { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        Listings = new();
+        var client = _clientFactory.CreateClient("api");
+        Listings = await client.GetFromJsonAsync<List<SummaryListing>>("listings");
+    }
+
+    [JSInvokable]
+    public static void PointClicked(int id)
+    {
+        Console.WriteLine($"You clicked {id}");
+    }
+}

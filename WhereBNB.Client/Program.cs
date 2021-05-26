@@ -21,9 +21,11 @@ namespace WhereBNB.Client
 
             builder.Services.AddScoped<ApiAuthorizationMessageHandler>();
 
-            builder.Services.AddHttpClient("WhereBNB.API",
+            builder.Services.AddHttpClient("api-auth",
                     client => client.BaseAddress = new Uri("https://localhost:5001"))
                 .AddHttpMessageHandler<ApiAuthorizationMessageHandler>();
+            builder.Services.AddHttpClient("api", 
+                client => client.BaseAddress = new Uri("https://localhost:5001"));
 
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
                 .CreateClient("WhereBNB.API"));
