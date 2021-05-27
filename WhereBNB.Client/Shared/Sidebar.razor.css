@@ -4,6 +4,13 @@ div {
     background: #f4f4f4;
     display: flex;
     flex-direction: column;
+}
+
+.listings {
+    width: 100%;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
     align-items: center;
     overflow-y: scroll;
     overflow-x: hidden;

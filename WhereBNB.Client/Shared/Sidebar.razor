@@ -1,8 +1,8 @@
 @using WhereBNB.Client.Model
-@using System.Runtime.CompilerServices
 @inject IHttpClientFactory _clientFactory;
 
 <div>
+    <div class="listings">
     @if ((Listings == null || Listings.Count != 0) && !ShowDetails)
     {
         @foreach (var listing in Listings)
@@ -14,20 +14,32 @@
     {
         
     }
+    </div>
+    <Pagination ChangePage="@HandleChangePage" MaxPage="@MaxPage" />
 </div>
 
 
 @code {
     private List<SummaryListing> Listings { get; set; }
+    private Func<int, Task> HandleChangePage { get; set; } = _ => Task.CompletedTask;
+    private int MaxPage { get; set; }
+    private readonly int _pageSize = 10;
     private static bool ShowDetails { get; set; }
     private static Listing SelectedListing { get; set; }
-    
+
     protected override async Task OnInitializedAsync()
     {
         Listings = new();
         var client = _clientFactory.CreateClient("api");
-        Listings = await client.GetFromJsonAsync<List<SummaryListing>>("listings");
-        
+        var listingCount = await client.GetFromJsonAsync<double>("listings");
+        MaxPage = (int)Math.Ceiling(listingCount / _pageSize);
+        Listings = await client.GetFromJsonAsync<List<SummaryListing>>($"listings?page=1&pageSize={_pageSize}");
+        HandleChangePage = async i =>
+        {
+            Console.WriteLine($"Changing page to {i}");
+            Listings = await client.GetFromJsonAsync<List<SummaryListing>>($"listings?page={i}&pageSize={_pageSize}");
+            StateHasChanged();
+        };
     }
 
     [JSInvokable]
