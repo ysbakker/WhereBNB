@@ -34,6 +34,7 @@ namespace WhereBNB.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddMemoryCache();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(options =>
                     {
@@ -45,6 +46,8 @@ namespace WhereBNB.API
 
             services.AddDbContext<WhereBNBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("WhereBNB")));
+
+            services.AddMiniProfiler(options => options.RouteBasePath = "/profiler").AddEntityFramework();
             
             services.AddControllers().AddNewtonsoftJson();
 
@@ -67,6 +70,8 @@ namespace WhereBNB.API
                     .AllowAnyHeader()
                     .AllowCredentials()
             );
+
+            app.UseMiniProfiler();
 
             app.UseHttpsRedirection();
 

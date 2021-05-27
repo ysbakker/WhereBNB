@@ -7,6 +7,8 @@ namespace WhereBNB.API.Repositories
     {
         Task<IEnumerable<T>> GetAll();
         Task<T> GetById(object id);
+        Task<IEnumerable<T>> Get(int page, int pageSize);
+        Task<int> Count();
         Task Insert(T entity);
         void Update(T entity);
         Task Delete(object id);

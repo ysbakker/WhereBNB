@@ -8,11 +8,12 @@ using GeoJSON.Net.Feature;
 using GeoJSON.Net.Geometry;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.Net.Http.Headers;
 using Newtonsoft.Json;
+using WhereBNB.API.Controllers.Parameters;
 using WhereBNB.API.Model;
 using WhereBNB.API.Repositories;
-using WhereBNB.API.Util;
 
 namespace WhereBNB.API.Controllers
 {
@@ -20,8 +21,8 @@ namespace WhereBNB.API.Controllers
     [Route("[controller]")]
     public class ListingsController : ControllerBase
     {
-        private IRepository<Listing> ListingRepository { get; set; }
-        private IRepository<SummaryListing> SummaryListingRepository { get; set; }
+        private IRepository<Listing> ListingRepository { get; }
+        private IRepository<SummaryListing> SummaryListingRepository { get; }
 
         public ListingsController(IRepository<Listing> listingRepository,
             IRepository<SummaryListing> summaryListingRepository)
@@ -31,32 +32,51 @@ namespace WhereBNB.API.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery]string? type)
+        public async Task<IActionResult> Get([FromQuery] ListingParameters parameters)
         {
-            var listings = await SummaryListingRepository.GetAll();
-            if (type == "geojson")
+            if (parameters.Type == "geojson")
             {
-                List<Feature> features = new();
-                FeatureCollection featureCollection = new(features);
-                
-                foreach (var listing in listings)
-                {
-                    if (!listing.Latitude.HasValue || !listing.Longitude.HasValue) continue;
-                    FixPosition.FixSummaryListingPosition(listing);
-                    features.Add(new Feature(new Point(new Position(listing.Latitude.Value, listing.Longitude.Value)), new {listing.Id}));
-                }
-
-                return Ok(featureCollection);
+                return Ok(await GetListingsFeatureCollection());
             }
-            return Ok(listings.Take(100));
+
+            if (!parameters.Page.HasValue || !parameters.PageSize.HasValue)
+            {
+                return Ok(new {count = await SummaryListingRepository.Count()});
+            }
+
+            try
+            {
+                var listings = await SummaryListingRepository.Get(parameters.Page.Value, parameters.PageSize.Value);
+                return Ok(listings);
+            }
+            catch (SqlException)
+            {
+                return BadRequest();
+            }
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
             var listing = await ListingRepository.GetById(id);
             if (listing == null) return NotFound();
             return Ok(listing);
+        }
+
+        private async Task<FeatureCollection> GetListingsFeatureCollection()
+        {
+            var listings = await SummaryListingRepository.GetAll();
+            List<Feature> features = new();
+            FeatureCollection featureCollection = new(features);
+
+            foreach (var listing in listings)
+            {
+                if (!listing.Latitude.HasValue || !listing.Longitude.HasValue) continue;
+                features.Add(new Feature(new Point(new Position(listing.Latitude.Value, listing.Longitude.Value)),
+                    new {listing.Id}));
+            }
+
+            return featureCollection;
         }
     }
 }

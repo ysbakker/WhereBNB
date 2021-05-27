@@ -28,6 +28,17 @@ namespace WhereBNB.API.Repositories
             return await Table.FindAsync(id);
         }
 
+        public async Task<IEnumerable<T>> Get(int page, int pageSize)
+        {
+            int skip = page * pageSize - pageSize;
+            return await Table.Skip(skip).Take(pageSize).ToListAsync();
+        }
+
+        public async Task<int> Count()
+        {
+            return await Table.CountAsync();
+        }
+
         public async Task Insert(T entity)
         {
             await Table.AddAsync(entity);
