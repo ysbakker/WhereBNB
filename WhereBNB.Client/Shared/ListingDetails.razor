@@ -1,0 +1,15 @@
+@using WhereBNB.Client.Model
+@using System.Text.Json
+
+<div class="listing-details">
+    <button type="button" class="btn btn-primary" onclick="@Back"><i class="bi bi-chevron-left"></i>Back</button>
+    <p>@Listing.Name</p>
+    <pre>@JsonSerializer.Serialize(Listing, new JsonSerializerOptions {WriteIndented = true})</pre>
+</div>
+
+@code {
+    [Parameter]
+    public Listing Listing { get; set; }
+    [Parameter]
+    public Action Back { get; set; }
+}

@@ -1,29 +1,33 @@
 @using WhereBNB.Client.Model
 @inject IHttpClientFactory _clientFactory;
 @inject IJSRuntime _jsRuntime;
+@implements IDisposable;
 
-<div>
+<div class="sidebar">
     @if ((Listings != null && Listings.Count != 0) && !ShowDetails)
     {
     <div class="listings">
         @foreach (var listing in Listings)
         {
-            <ListingCard Listing="@listing" />
+            <ListingCard Listing="@listing" Clicked="@HandleListingClicked" />
         }
     </div>
     <Pagination ChangePage="@HandleChangePage" MaxPage="@MaxPage" />
     }
     @if (ShowDetails && SelectedListing != null)
     {
-        <p>@SelectedListing.Name</p>
+        <ListingDetails Listing="@SelectedListing" Back="@HandleBack" />
     }
 </div>
 
 
 @code {
+    private Func<int, Task> HandleChangePage { get; set; } = _ => Task.CompletedTask;
+    private Action HandleBack { get; set; } = () => { };
+    private Func<int, Task> HandleListingClicked { get; set; } = _ => Task.CompletedTask;
+    
     private DotNetObjectReference<Sidebar> _objectReference;
     private List<SummaryListing> Listings { get; set; }
-    private Func<int, Task> HandleChangePage { get; set; } = _ => Task.CompletedTask;
     private int MaxPage { get; set; }
     private readonly int _pageSize = 10;
     private bool ShowDetails { get; set; }
@@ -31,7 +35,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Listings = new();
+        Listings = new List<SummaryListing>();
         var client = _clientFactory.CreateClient("api");
         var listingCount = await client.GetFromJsonAsync<double>("listings");
         MaxPage = (int)Math.Ceiling(listingCount / _pageSize);
@@ -41,6 +45,15 @@
             Console.WriteLine($"Changing page to {i}");
             Listings = await client.GetFromJsonAsync<List<SummaryListing>>($"listings?page={i}&pageSize={_pageSize}");
             StateHasChanged();
+        };
+        HandleBack = () =>
+        {
+            ShowDetails = false;
+            StateHasChanged();
+        };
+        HandleListingClicked = async id =>
+        {
+            await PointClicked(id);
         };
     }
     
@@ -63,4 +76,10 @@
         ShowDetails = true;
         StateHasChanged();
     }
+
+    public void Dispose()
+    {
+        _objectReference.Dispose();
+    }
+
 }

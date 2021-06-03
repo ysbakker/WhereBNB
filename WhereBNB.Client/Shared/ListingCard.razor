@@ -1,5 +1,5 @@
 @using WhereBNB.Client.Model
-<div>
+<div @onclick="async () => await HandleClicked()">
     <h5>@Listing.Name</h5>
     <p>$@Listing.Price</p>
 </div>
@@ -7,4 +7,12 @@
 @code {
     [Parameter]
     public SummaryListing Listing { get; set; }
+
+    [Parameter]
+    public Func<int, Task> Clicked { get; set; }
+
+    private async Task HandleClicked()
+    {
+        await Clicked(Listing.Id);
+    }
 }
