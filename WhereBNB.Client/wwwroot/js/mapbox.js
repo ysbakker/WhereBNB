@@ -1,5 +1,5 @@
 window.mapbox = {
-    init: () => {
+    init: (dotnetReference) => {
         mapboxgl.accessToken = 'pk.eyJ1IjoieW9ycmljayIsImEiOiJja29hOTdiZ3MwNDlvMndvZGEwYzdqdGF6In0.DRd1vqbAUBiSpMymkFNRpw';
         const map = new mapboxgl.Map({
             container: 'mapboxMap',
@@ -69,7 +69,7 @@ window.mapbox = {
 
             map.on('click', 'points', function (e) {
                 const id = e.features[0].properties.Id;
-                DotNet.invokeMethodAsync("WhereBNB.Client", "PointClicked", id);
+                dotnetReference.invokeMethodAsync("PointClicked", id);
             });
             
             map.on('mouseenter', 'points', function () {

@@ -1,31 +1,33 @@
 @using WhereBNB.Client.Model
 @inject IHttpClientFactory _clientFactory;
+@inject IJSRuntime _jsRuntime;
 
 <div>
-    <div class="listings">
-    @if ((Listings == null || Listings.Count != 0) && !ShowDetails)
+    @if ((Listings != null && Listings.Count != 0) && !ShowDetails)
     {
+    <div class="listings">
         @foreach (var listing in Listings)
         {
             <ListingCard Listing="@listing" />
         }
-    }
-    @if (ShowDetails)
-    {
-        
-    }
     </div>
     <Pagination ChangePage="@HandleChangePage" MaxPage="@MaxPage" />
+    }
+    @if (ShowDetails && SelectedListing != null)
+    {
+        <p>@SelectedListing.Name</p>
+    }
 </div>
 
 
 @code {
+    private DotNetObjectReference<Sidebar> _objectReference;
     private List<SummaryListing> Listings { get; set; }
     private Func<int, Task> HandleChangePage { get; set; } = _ => Task.CompletedTask;
     private int MaxPage { get; set; }
     private readonly int _pageSize = 10;
-    private static bool ShowDetails { get; set; }
-    private static Listing SelectedListing { get; set; }
+    private bool ShowDetails { get; set; }
+    private Listing SelectedListing { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
@@ -41,12 +43,24 @@
             StateHasChanged();
         };
     }
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        await base.OnAfterRenderAsync(firstRender);
+        if (firstRender)
+        {
+            _objectReference = DotNetObjectReference.Create(this);
+            await _jsRuntime.InvokeVoidAsync("mapbox.init", _objectReference);
+        }
+    }
 
     [JSInvokable]
-    public static void PointClicked(int id)
+    public async Task PointClicked(int id)
     {
-        
-        Console.WriteLine($"You clicked {id}");
+        var client = _clientFactory.CreateClient("api");
+        var listing = await client.GetFromJsonAsync<Listing>($"listings/{id}");
+        SelectedListing = listing;
         ShowDetails = true;
+        StateHasChanged();
     }
 }

@@ -1,7 +1,9 @@
 <nav>
     <ul class="pagination">
-        <li class="page-item @(CurrentPage == 1 ? "disabled" : "")">
-            <a class="page-link" href="#" @onclick="async () => await HandleChangePage(CurrentPage - 1)" tabindex="-1"><i class="bi-arrow-left-circle-fill"></i></a>
+        <li class="page-item@(CurrentPage == 1 ? " disabled" : "")">
+            <a class="page-link" href="#" @onclick="async () => await HandleChangePage(CurrentPage - 1)" tabindex="-1">
+                <i class="bi-arrow-left-circle-fill"></i>
+            </a>
         </li>
         @if (CurrentPage > 1)
         {
@@ -30,8 +32,10 @@
                 <a class="page-link" href="#" @onclick="async () => await HandleChangePage(MaxPage)">@MaxPage</a>
             </li>
         }
-        <li class="page-item">
-            <a class="page-link" href="#" @onclick="async () => await HandleChangePage(CurrentPage + 1)"><i class="bi-arrow-right-circle-fill"></i></a>
+        <li class="page-item@(CurrentPage >= MaxPage ? " disabled" : "")">
+            <a class="page-link" href="#" @onclick="async () => await HandleChangePage(CurrentPage + 1)">
+                <i class="bi-arrow-right-circle-fill"></i>
+            </a>
         </li>
     </ul>
 </nav>
