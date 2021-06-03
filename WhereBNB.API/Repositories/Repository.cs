@@ -17,7 +17,7 @@ namespace WhereBNB.API.Repositories
             Context = context;
             Table = context.Set<T>();
         }
-        
+
         public async Task<IEnumerable<T>> GetAll()
         {
             return await Table.ToListAsync();

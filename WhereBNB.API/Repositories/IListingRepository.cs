@@ -1,0 +1,12 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using WhereBNB.API.Controllers.Parameters;
+using WhereBNB.API.Model;
+
+namespace WhereBNB.API.Repositories
+{
+    public interface IListingRepository : IRepository<Listing>
+    {
+        Task<IEnumerable<Listing>> Get(ListingParameters p);
+    }
+}

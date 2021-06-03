@@ -21,10 +21,10 @@ namespace WhereBNB.API.Controllers
     [Route("[controller]")]
     public class ListingsController : ControllerBase
     {
-        private IRepository<Listing> ListingRepository { get; }
+        private IListingRepository ListingRepository { get; }
         private IRepository<SummaryListing> SummaryListingRepository { get; }
 
-        public ListingsController(IRepository<Listing> listingRepository,
+        public ListingsController(IListingRepository listingRepository,
             IRepository<SummaryListing> summaryListingRepository)
         {
             ListingRepository = listingRepository;
@@ -46,7 +46,7 @@ namespace WhereBNB.API.Controllers
 
             try
             {
-                var listings = await SummaryListingRepository.Get(parameters.Page.Value, parameters.PageSize.Value);
+                var listings = await ListingRepository.Get(parameters);
                 return Ok(listings);
             }
             catch (SqlException)

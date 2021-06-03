@@ -51,7 +51,7 @@ namespace WhereBNB.API
             
             services.AddControllers().AddNewtonsoftJson();
 
-            services.AddScoped<IRepository<Listing>, Repository<Listing>>();
+            services.AddScoped<IListingRepository, ListingRepository>();
             services.AddScoped<IRepository<SummaryListing>, Repository<SummaryListing>>();
         }
 
