@@ -30,7 +30,7 @@ namespace WhereBNB.API.Repositories
             if (p.ReviewFrom.HasValue && p.ReviewTo.HasValue)
             {
                 query = query.Where(l =>
-                    p.ReviewFrom.Value <= l.ReviewScoresRating && p.ReviewTo.Value <= l.ReviewScoresRating);
+                    p.ReviewFrom.Value <= l.ReviewScoresRating && l.ReviewScoresRating <= p.ReviewTo.Value);
             }
 
             if (p.Page.HasValue && p.PageSize.HasValue)
