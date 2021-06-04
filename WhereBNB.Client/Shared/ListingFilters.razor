@@ -1,24 +1,52 @@
 @inject IHttpClientFactory _clientFactory;
 
-<div class="listing-filters">
-    <label for="neighbourhood-select">Neighbourhood</label>
-    <select id="neighbourhood-select" class="custom-select">
-        @if (Neighbourhoods != null)
-        {
-            @foreach (var neighbourhood in Neighbourhoods)
-            {
-                <option value="@neighbourhood">@neighbourhood</option>
-            }
-        }
-    </select>
+<div class="listing-filters collapse" id="listing-filters">
+    <form>
+        <div class="form-row">
+            <div class="form-group col-md-12">
+                <label for="neighbourhood-select">Neighbourhood</label>
+                <select id="neighbourhood-select" class="custom-select form-control">
+                    @if (Neighbourhoods != null)
+                    {
+                        @foreach (var neighbourhood in Neighbourhoods)
+                        {
+                            <option value="@neighbourhood">@neighbourhood</option>
+                        }
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="price-from-input">Price from</label>
+                <input id="price-from-input" class="form-control" placeholder="1"/>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="price-to-input">Price to</label>
+                <input id="price-to-input" class="form-control" placeholder="567"/>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="review-from-input">Review from</label>
+                <input id="review-from-input" class="form-control" placeholder="1"/>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="review-to-input">Review to</label>
+                <input id="review-to-input" class="form-control" placeholder="100"/>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-primary float-right">Filter</button>
+    </form>
 </div>
 
 @code {
     private string[] Neighbourhoods { get; set; }
-    
+
     protected override async Task OnInitializedAsync()
     {
         var client = _clientFactory.CreateClient("api");
         Neighbourhoods = await client.GetFromJsonAsync<string[]>("/neighbourhoods");
     }
+
 }

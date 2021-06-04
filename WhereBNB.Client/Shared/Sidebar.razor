@@ -6,7 +6,7 @@
 <div class="sidebar">
     @if ((Listings != null && Listings.Count != 0) && !ShowDetails)
     {
-        <p class="h4">Filters</p>
+        <p class="h4 cursor-pointer" data-toggle="collapse" href="#listing-filters">Filters <i class="bi bi-chevron-down"></i></p>
         <ListingFilters />
         <p class="h4">Results</p>
         <div class="listings">
