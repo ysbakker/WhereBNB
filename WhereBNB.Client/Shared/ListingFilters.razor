@@ -1,0 +1,24 @@
+@inject IHttpClientFactory _clientFactory;
+
+<div class="listing-filters">
+    <label for="neighbourhood-select">Neighbourhood</label>
+    <select id="neighbourhood-select" class="custom-select">
+        @if (Neighbourhoods != null)
+        {
+            @foreach (var neighbourhood in Neighbourhoods)
+            {
+                <option value="@neighbourhood">@neighbourhood</option>
+            }
+        }
+    </select>
+</div>
+
+@code {
+    private string[] Neighbourhoods { get; set; }
+    
+    protected override async Task OnInitializedAsync()
+    {
+        var client = _clientFactory.CreateClient("api");
+        Neighbourhoods = await client.GetFromJsonAsync<string[]>("/neighbourhoods");
+    }
+}

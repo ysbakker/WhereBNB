@@ -6,13 +6,16 @@
 <div class="sidebar">
     @if ((Listings != null && Listings.Count != 0) && !ShowDetails)
     {
-    <div class="listings">
-        @foreach (var listing in Listings)
-        {
-            <ListingCard Listing="@listing" Clicked="@HandleListingClicked" />
-        }
-    </div>
-    <Pagination ChangePage="@HandleChangePage" MaxPage="@MaxPage" />
+        <p class="h4">Filters</p>
+        <ListingFilters />
+        <p class="h4">Results</p>
+        <div class="listings">
+            @foreach (var listing in Listings)
+            {
+                <ListingCard Listing="@listing" Clicked="@HandleListingClicked" />
+            }
+        </div>
+        <Pagination ChangePage="@HandleChangePage" MaxPage="@MaxPage" />
     }
     @if (ShowDetails && SelectedListing != null)
     {
