@@ -1,3 +1,5 @@
+@using WhereBNB.Client.Model
+@using System.Text.Json
 @inject IHttpClientFactory _clientFactory;
 
 <div class="listing-filters collapse" id="listing-filters">
@@ -5,7 +7,8 @@
         <div class="form-row">
             <div class="form-group col-md-12">
                 <label for="neighbourhood-select">Neighbourhood</label>
-                <select id="neighbourhood-select" class="custom-select form-control">
+                <select id="neighbourhood-select" class="custom-select form-control" @bind="Parameters.Neighbourhood">
+                    <option value="" selected>-- All Neighbourhoods --</option>
                     @if (Neighbourhoods != null)
                     {
                         @foreach (var neighbourhood in Neighbourhoods)
@@ -19,34 +22,46 @@
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="price-from-input">Price from</label>
-                <input id="price-from-input" class="form-control" placeholder="1"/>
+                <input id="price-from-input" class="form-control" placeholder="1" @bind="Parameters.PriceFrom" @bind:event="oninput"/>
             </div>
             <div class="form-group col-md-6">
                 <label for="price-to-input">Price to</label>
-                <input id="price-to-input" class="form-control" placeholder="567"/>
+                <input id="price-to-input" class="form-control" placeholder="567" @bind="Parameters.PriceTo" @bind:event="oninput"/>
             </div>
         </div>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="review-from-input">Review from</label>
-                <input id="review-from-input" class="form-control" placeholder="1"/>
+                <input id="review-from-input" class="form-control" placeholder="1" @bind="Parameters.ReviewFrom" @bind:event="oninput"/>
             </div>
             <div class="form-group col-md-6">
                 <label for="review-to-input">Review to</label>
-                <input id="review-to-input" class="form-control" placeholder="100"/>
+                <input id="review-to-input" class="form-control" placeholder="100" @bind="Parameters.ReviewTo" @bind:event="oninput"/>
             </div>
         </div>
-        <button type="submit" class="btn btn-primary float-right">Filter</button>
+        <button
+            type="submit"
+            class="btn btn-primary float-right"
+            @onclick="async () => await HandleApplyFilter(Parameters)"
+            @onclick:preventDefault>
+            Filter
+        </button>
     </form>
 </div>
 
 @code {
+
+    [Parameter]
+    public Func<ListingParameters, Task> HandleApplyFilter { get; set; }
+    [Parameter]
+    public ListingParameters Parameters { get; set; } = new();
+
     private string[] Neighbourhoods { get; set; }
+    
 
     protected override async Task OnInitializedAsync()
     {
         var client = _clientFactory.CreateClient("api");
         Neighbourhoods = await client.GetFromJsonAsync<string[]>("/neighbourhoods");
     }
-
 }

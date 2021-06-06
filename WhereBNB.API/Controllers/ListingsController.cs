@@ -41,7 +41,7 @@ namespace WhereBNB.API.Controllers
 
             if (!parameters.Page.HasValue || !parameters.PageSize.HasValue)
             {
-                return Ok(await SummaryListingRepository.Count());
+                return Ok(await ListingRepository.Count(parameters));
             }
 
             try

@@ -1,21 +1,22 @@
 @using WhereBNB.Client.Model
 @inject IHttpClientFactory _clientFactory;
 @inject IJSRuntime _jsRuntime;
+@inject NavigationManager _navManager;
 @implements IDisposable;
 
 <div class="sidebar">
     @if ((Listings != null && Listings.Count != 0) && !ShowDetails)
     {
         <p class="h4 cursor-pointer" data-toggle="collapse" href="#listing-filters">Filters <i class="bi bi-chevron-down"></i></p>
-        <ListingFilters />
+        <ListingFilters Parameters="@ListingParameters" HandleApplyFilter="@HandleApplyFilter" />
         <p class="h4">Results</p>
         <div class="listings">
             @foreach (var listing in Listings)
             {
-                <ListingCard Listing="@listing" Clicked="@HandleListingClicked" />
+                <ListingCard Listing="@listing" Clicked="@PointClicked" />
             }
         </div>
-        <Pagination ChangePage="@HandleChangePage" MaxPage="@MaxPage" />
+        <Pagination ChangePage="@HandleChangePage" MaxPage="@MaxPage" CurrentPage="@ListingParameters.Page.GetValueOrDefault(1)"/>
     }
     @if (ShowDetails && SelectedListing != null)
     {
@@ -25,41 +26,24 @@
 
 
 @code {
-    private Func<int, Task> HandleChangePage { get; set; } = _ => Task.CompletedTask;
-    private Action HandleBack { get; set; } = () => { };
-    private Func<int, Task> HandleListingClicked { get; set; } = _ => Task.CompletedTask;
-    
     private DotNetObjectReference<Sidebar> _objectReference;
     private List<SummaryListing> Listings { get; set; }
     private int MaxPage { get; set; }
     private readonly int _pageSize = 10;
     private bool ShowDetails { get; set; }
     private Listing SelectedListing { get; set; }
+    private HttpClient Client { get; set; }
+    private ListingParameters ListingParameters { get; set; } = new();
 
     protected override async Task OnInitializedAsync()
     {
         Listings = new List<SummaryListing>();
-        var client = _clientFactory.CreateClient("api");
-        var listingCount = await client.GetFromJsonAsync<double>("listings");
+        Client = _clientFactory.CreateClient("api");
+        var listingCount = await Client.GetFromJsonAsync<double>("listings");
         MaxPage = (int)Math.Ceiling(listingCount / _pageSize);
-        Listings = await client.GetFromJsonAsync<List<SummaryListing>>($"listings?page=1&pageSize={_pageSize}");
-        HandleChangePage = async i =>
-        {
-            Console.WriteLine($"Changing page to {i}");
-            Listings = await client.GetFromJsonAsync<List<SummaryListing>>($"listings?page={i}&pageSize={_pageSize}");
-            StateHasChanged();
-        };
-        HandleBack = () =>
-        {
-            ShowDetails = false;
-            StateHasChanged();
-        };
-        HandleListingClicked = async id =>
-        {
-            await PointClicked(id);
-        };
+        Listings = await Client.GetFromJsonAsync<List<SummaryListing>>($"listings?page=1&pageSize={_pageSize}");
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         await base.OnAfterRenderAsync(firstRender);
@@ -73,8 +57,7 @@
     [JSInvokable]
     public async Task PointClicked(int id)
     {
-        var client = _clientFactory.CreateClient("api");
-        var listing = await client.GetFromJsonAsync<Listing>($"listings/{id}");
+        var listing = await Client.GetFromJsonAsync<Listing>($"listings/{id}");
         SelectedListing = listing;
         ShowDetails = true;
         StateHasChanged();
@@ -84,5 +67,40 @@
     {
         _objectReference.Dispose();
     }
+    
+    private async Task HandleChangePage(int i)
+    {
+        ListingParameters.Page = i;
+        Listings = await Client.GetFromJsonAsync<List<SummaryListing>>($"listings{CreateQueryString(ListingParameters)}");
+        StateHasChanged();
+    }
 
+    private void HandleBack()
+    {
+        ShowDetails = false;
+        StateHasChanged();
+    }
+
+    private async Task HandleApplyFilter(ListingParameters filters)
+    {
+        ListingParameters = filters;
+        ListingParameters.Page = 1;
+        var listingCount = await Client.GetFromJsonAsync<double>($"listings{CreateQueryString(ListingParameters, true)}");
+        MaxPage = (int)Math.Ceiling(listingCount / _pageSize);
+        Listings = await Client.GetFromJsonAsync<List<SummaryListing>>($"listings{CreateQueryString(filters)}");
+        StateHasChanged();
+    }
+
+    private string CreateQueryString(ListingParameters filters, bool getCount = false)
+    {
+        var query = $"?page={filters.Page.GetValueOrDefault(1)}";
+        
+        if (!getCount) query += $"&pageSize={filters.PageSize.GetValueOrDefault(_pageSize)}";
+        
+        if (!string.IsNullOrEmpty(filters.Neighbourhood)) query += $"&neighbourhood={filters.Neighbourhood}";
+        if (filters.PriceFrom.HasValue && filters.PriceTo.HasValue) query += $"&priceFrom={filters.PriceFrom}&priceTo={filters.PriceTo}";
+        if (filters.ReviewFrom.HasValue && filters.ReviewTo.HasValue) query += $"&reviewFrom={filters.ReviewFrom}&reviewTo={filters.ReviewTo}";
+
+        return query;
+    }
 }

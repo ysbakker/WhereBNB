@@ -16,6 +16,16 @@ namespace WhereBNB.API.Repositories
 
         public async Task<IEnumerable<Listing>> Get(ListingParameters p)
         {
+            return await CreateQuery(p).OrderBy(l => l.Name).ToListAsync();
+        }
+
+        public async Task<int> Count(ListingParameters p)
+        {
+            return await CreateQuery(p).OrderBy(l => l.Name).CountAsync();
+        }
+
+        private IQueryable<Listing> CreateQuery(ListingParameters p)
+        {
             var query = Table.AsQueryable();
             if (!string.IsNullOrEmpty(p.Neighbourhood))
             {
@@ -39,7 +49,7 @@ namespace WhereBNB.API.Repositories
                 query = query.Skip(skip).Take(p.PageSize.Value);
             }
 
-            return await query.OrderBy(l => l.Name).ToListAsync();
+            return query;
         }
     }
 }
