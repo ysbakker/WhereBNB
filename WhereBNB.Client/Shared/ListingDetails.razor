@@ -1,5 +1,6 @@
 @using WhereBNB.Client.Model
 @using System.Text.Json
+@inject IHttpClientFactory _clientFactory;
 
 <div class="listing-details">
     <button type="button" class="btn btn-primary" onclick="@Back"><i class="bi bi-chevron-left"></i>Back</button>
@@ -12,11 +13,17 @@
         </div>
     </a>
     <div class="details">
-        <p><span class="enlarge">$@Listing.Price</span> per night</p>
-    </div>
-    <div class="details">
         <h2>Description</h2>
         <p>@Listing.Description</p>
+    </div>
+    <div class="details text-center">
+        <p><span class="enlarge">$@Listing.Price</span> per night</p>
+    </div>
+    <div class="details text-center">
+        <p><span class="enlarge">@Stays</span> stays</p>
+    </div>
+    <div class="details text-center">
+        <p><span class="enlarge">$@(Stays * Listing.Price)</span> income</p>
     </div>
 </div>
 
@@ -25,4 +32,12 @@
     public Listing Listing { get; set; }
     [Parameter]
     public Action Back { get; set; }
+    private int Stays { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var client = _clientFactory.CreateClient("api");
+        Stays = await client.GetFromJsonAsync<int>($"stats/stays/{Listing.Id}");
+    }
+
 }
