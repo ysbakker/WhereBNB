@@ -24,9 +24,16 @@
     </div>
     <AuthorizeView>
         <Authorized>
-            @if (context.User.HasClaim(c => c.Type == "extension_Admin"))
+            @if (context.User.HasClaim(c => c.Type == "extension_Admin") &&
+                 context.User.Claims.First(c => c.Type == "extension_Admin").Value == "True")
             {
                 <Graphs Listing="@Listing" />
+            }
+            else
+            {
+                <p class="text-center">
+                    You do not have administrator privileges!
+                </p>
             }
         </Authorized>
         <NotAuthorized>
