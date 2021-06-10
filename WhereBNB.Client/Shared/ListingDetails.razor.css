@@ -4,21 +4,6 @@
     overflow-x: hidden;
 }
 
-.details {
-    width: 100%;
-    padding: 1em;
-    background: #fff;
-    border-radius: 1em;
-    margin: 0 0 1em 0;
-    box-shadow: 3px 3px 5px #eee;
-    max-height: 300px;
-    overflow-y: scroll;
-}
-
-.details p {
-    margin: 0;
-}
-
 .host-info {
     display: flex;
     align-items: center;
@@ -31,8 +16,4 @@
 
 .host-info p {
     margin: 0 0 0 1em;
-}
-
-span.enlarge {
-    font-size: 2em;
 }

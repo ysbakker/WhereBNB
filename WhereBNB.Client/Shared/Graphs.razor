@@ -1,0 +1,152 @@
+@using WhereBNB.Client.Model
+@using ChartJs.Blazor.LineChart
+@using ChartJs.Blazor.Common
+@using ChartJs.Blazor.Common.Axes
+@using ChartJs.Blazor.Common.Enums
+@using ChartJs.Blazor
+@using ChartJs.Blazor.Util
+@using System.Drawing
+@using ChartJs.Blazor.Common.Axes.Ticks
+@inject IHttpClientFactory _clientFactory;
+
+<div class="details text-center">
+    <p><span class="enlarge">@AverageNeighbourhoodPrice.ToString("C")</span> average neighbourhood price</p>
+</div>
+<Chart Config="_listingAvailabilityGraph"></Chart>
+<Chart Config="_neighbourhoodAvailabilityGraph"></Chart>
+
+@code {
+    [Parameter]
+    public Listing Listing { get; set; }
+    private Availability[] ListingAvailability { get; set; }
+    private Availability[] NeighbourhoodAvailability { get; set; }
+    private double AverageNeighbourhoodPrice { get; set; }
+    private LineConfig _listingAvailabilityGraph;
+    private LineConfig _neighbourhoodAvailabilityGraph;
+
+    protected override void OnInitialized()
+    {
+        _listingAvailabilityGraph = new LineConfig
+        {
+            Options = new LineOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Average listing availability"
+                },
+                Scales = new Scales
+                {
+                    XAxes = new List<CartesianAxis>
+                    {
+                        new CategoryAxis
+                        {
+                            ScaleLabel = new ScaleLabel
+                            {
+                                LabelString = "Month"
+                            }
+                        }
+                    },
+                    YAxes = new List<CartesianAxis>
+                    {
+                        new LinearCartesianAxis
+                        {
+                            ScaleLabel = new ScaleLabel
+                            {
+                                LabelString = "Availability"
+                            },
+                            Ticks = new LinearCartesianTicks
+                            {
+                                Min = 0,
+                                Max = 100
+                            }
+                        }
+                    }
+                }
+            }
+        };
+        _neighbourhoodAvailabilityGraph = new LineConfig
+        {
+            Options = new LineOptions
+            {
+                Responsive = true,
+                Title = new OptionsTitle
+                {
+                    Display = true,
+                    Text = "Average neighbourhood availability"
+                },
+                Scales = new Scales
+                {
+                    XAxes = new List<CartesianAxis>
+                    {
+                        new CategoryAxis
+                        {
+                            ScaleLabel = new ScaleLabel
+                            {
+                                LabelString = "Month"
+                            }
+                        }
+                    },
+                    YAxes = new List<CartesianAxis>
+                    {
+                        new LinearCartesianAxis
+                        {
+                            ScaleLabel = new ScaleLabel
+                            {
+                                LabelString = "Availability"
+                            },
+                            Ticks = new LinearCartesianTicks
+                            {
+                                Min = 0,
+                                Max = 100
+                            }
+                        }
+                    }
+                }
+            }
+        };
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var client = _clientFactory.CreateClient("api-auth");
+        ListingAvailability = await client.GetFromJsonAsync<Availability[]>($"/stats/availability/{Listing.Id}");
+        NeighbourhoodAvailability = await client.GetFromJsonAsync<Availability[]>($"/stats/availability/{Listing.NeighbourhoodCleansed}");
+        AverageNeighbourhoodPrice = await client.GetFromJsonAsync<double>($"/stats/prices/{Listing.NeighbourhoodCleansed}");
+        
+        _listingAvailabilityGraph.Data.Datasets.Clear();
+        _listingAvailabilityGraph.Data.Labels.Clear();
+        _neighbourhoodAvailabilityGraph.Data.Datasets.Clear();
+        _neighbourhoodAvailabilityGraph.Data.Labels.Clear();
+        
+        IDataset<int> listingData = new LineDataset<int>(ListingAvailability?.Select(l => l.Available * 100 / l.Total))
+        {
+            Label = "Availability (%)",
+            BackgroundColor = ColorUtil.FromDrawingColor(Color.Red),
+            BorderColor = ColorUtil.FromDrawingColor(Color.Blue),
+            Fill = FillingMode.Disabled
+        };
+        IDataset<int> neighbourhoodData = new LineDataset<int>(NeighbourhoodAvailability?.Select(l => l.Available * 100 / l.Total))
+        {
+            Label = "Availability (%)",
+            BackgroundColor = ColorUtil.FromDrawingColor(Color.Red),
+            BorderColor = ColorUtil.FromDrawingColor(Color.Blue),
+            Fill = FillingMode.Disabled
+        };
+
+        ListingAvailability?.ToList().ForEach(la =>
+        {
+            _listingAvailabilityGraph.Data.Labels.Add(la.Month.ToString());
+        });
+        _listingAvailabilityGraph.Data.Datasets.Add(listingData);
+        NeighbourhoodAvailability?.ToList().ForEach(na =>
+        {
+            _neighbourhoodAvailabilityGraph.Data.Labels.Add(na.Month.ToString());
+        });
+        _neighbourhoodAvailabilityGraph.Data.Datasets.Add(neighbourhoodData);
+        
+        StateHasChanged();
+    }
+    
+}

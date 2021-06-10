@@ -41,6 +41,25 @@ a, .btn-link {
     cursor: pointer;
 }
 
+.details {
+    width: 100%;
+    padding: 1em;
+    background: #fff;
+    border-radius: 1em;
+    margin: 0 0 1em 0;
+    box-shadow: 3px 3px 5px #eee;
+    max-height: 300px;
+    overflow-y: scroll;
+}
+
+.details p {
+    margin: 0;
+}
+
+span.enlarge {
+    font-size: 2em;
+}
+
 #blazor-error-ui {
     background: lightyellow;
     bottom: 0;

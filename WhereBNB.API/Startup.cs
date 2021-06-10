@@ -44,6 +44,12 @@ namespace WhereBNB.API
                     },
                     options => { Configuration.Bind("AzureAdB2C", options); });
 
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Admin", policy =>
+                    policy.RequireClaim("extension_Admin", "true"));
+            });
+
             services.AddDbContext<WhereBNBContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("WhereBNB")));
 

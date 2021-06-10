@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WhereBNB.API.Repositories;
 
@@ -21,18 +22,21 @@ namespace WhereBNB.API.Controllers
             return Ok(await _calendarRepository.GetMonthlyStays(id));
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpGet("availability/{id:int}")]
         public async Task<IActionResult> GetAvailability(int id)
         {
             return Ok(await _calendarRepository.GetListingAvailability(id));
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpGet("availability/{neighbourhood}")]
         public async Task<IActionResult> GetAvailability(string neighbourhood)
         {
             return Ok(await _calendarRepository.GetNeighbourhoodAvailability(neighbourhood));
         }
 
+        [Authorize(Policy = "Admin")]
         [HttpGet("prices/{neighbourhood}")]
         public async Task<IActionResult> GetAveragePrice(string neighbourhood)
         {

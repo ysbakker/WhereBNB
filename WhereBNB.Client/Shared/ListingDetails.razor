@@ -1,5 +1,6 @@
 @using WhereBNB.Client.Model
 @using System.Text.Json
+@using System.Reflection.Metadata
 @inject IHttpClientFactory _clientFactory;
 
 <div class="listing-details">
@@ -12,10 +13,6 @@
             <p><strong>Host</strong><br/>@Listing.HostName</p>
         </div>
     </a>
-    <div class="details">
-        <h2>Description</h2>
-        <p>@Listing.Description</p>
-    </div>
     <div class="details text-center">
         <p><span class="enlarge">$@Listing.Price</span> per night</p>
     </div>
@@ -25,6 +22,19 @@
     <div class="details text-center">
         <p><span class="enlarge">$@(Stays * Listing.Price)</span> income</p>
     </div>
+    <AuthorizeView>
+        <Authorized>
+            @if (context.User.HasClaim(c => c.Type == "extension_Admin"))
+            {
+                <Graphs Listing="@Listing" />
+            }
+        </Authorized>
+        <NotAuthorized>
+            <p class="text-center">
+                <a href="authentication/login">Log in</a> to see more stats!
+            </p>
+        </NotAuthorized>
+    </AuthorizeView>
 </div>
 
 @code {
@@ -33,8 +43,8 @@
     [Parameter]
     public Action Back { get; set; }
     private int Stays { get; set; }
-
-    protected override async Task OnInitializedAsync()
+    
+    protected override async Task OnParametersSetAsync()
     {
         var client = _clientFactory.CreateClient("api");
         Stays = await client.GetFromJsonAsync<int>($"stats/stays/{Listing.Id}");
