@@ -3,8 +3,21 @@
 
 <div class="listing-details">
     <button type="button" class="btn btn-primary" onclick="@Back"><i class="bi bi-chevron-left"></i>Back</button>
-    <p>@Listing.Name</p>
-    <pre>@JsonSerializer.Serialize(Listing, new JsonSerializerOptions {WriteIndented = true})</pre>
+    <h1>@Listing.Name</h1>
+    <a href="@Listing.ListingUrl" target="_blank" rel="noopener noreferrer nofollow"><p>AirBNB Link</p></a>
+    <a href="@Listing.HostUrl" target="_blank" rel="noopener noreferrer nofollow">
+        <div class="details host-info">
+            <img src="@Listing.HostPictureUrl" alt="Host picture"/>
+            <p><strong>Host</strong><br/>@Listing.HostName</p>
+        </div>
+    </a>
+    <div class="details">
+        <p><span class="enlarge">$@Listing.Price</span> per night</p>
+    </div>
+    <div class="details">
+        <h2>Description</h2>
+        <p>@Listing.Description</p>
+    </div>
 </div>
 
 @code {
