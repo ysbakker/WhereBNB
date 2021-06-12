@@ -19,13 +19,15 @@ namespace WhereBNB.Client
             var builder = WebAssemblyHostBuilder.CreateDefault(args);
             builder.RootComponents.Add<App>("#app");
 
+            var ApiUrl = builder.Configuration.GetSection("ApiUrl").Value;
+
             builder.Services.AddScoped<ApiAuthorizationMessageHandler>();
 
             builder.Services.AddHttpClient("api-auth",
-                    client => client.BaseAddress = new Uri("https://localhost:5001"))
+                    client => client.BaseAddress = new Uri(ApiUrl))
                 .AddHttpMessageHandler<ApiAuthorizationMessageHandler>();
             builder.Services.AddHttpClient("api", 
-                client => client.BaseAddress = new Uri("https://localhost:5001"));
+                client => client.BaseAddress = new Uri(ApiUrl));
 
             builder.Services.AddScoped(sp => sp.GetRequiredService<IHttpClientFactory>()
                 .CreateClient("WhereBNB.API"));

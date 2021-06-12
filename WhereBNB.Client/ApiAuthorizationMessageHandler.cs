@@ -11,7 +11,7 @@ namespace WhereBNB.Client
             : base(provider, navigationManager)
         {
             ConfigureHandler(
-                new[] { "https://localhost:5001" },
+                new[] { "https://localhost:5001", "https://wherebnb-api.azurewebsites.net" },
                 new[] { scope });
         }
     }
