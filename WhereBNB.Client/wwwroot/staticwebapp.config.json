@@ -2,5 +2,13 @@
   "navigationFallback": {
     "rewrite": "index.html",
     "exclude": ["/_framework/*", "/css/*"]
-  }
+  },
+  "routes": [
+    {
+      "route": "*",
+      "headers": {
+        "Referrer-Policy": "strict-origin"
+      }
+    }
+  ]
 }
