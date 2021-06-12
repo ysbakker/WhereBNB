@@ -73,7 +73,7 @@ namespace WhereBNB.API
             }
 
             app.UseCors(policy =>
-                policy.WithOrigins("https://localhost:5000")
+                policy.WithOrigins("https://localhost:5000", "https://lemon-stone-09825c203.azurestaticapps.net")
                     .AllowAnyMethod()
                     .AllowAnyHeader()
                     .AllowCredentials()
