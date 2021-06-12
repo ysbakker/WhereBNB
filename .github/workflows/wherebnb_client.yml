@@ -53,5 +53,5 @@ jobs:
       with:
         app-name: 'wherebnb'
         slot-name: 'production'
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_baf6fa9f945945399d0a665ccac4ae90 }}
+        publish-profile: ${{ secrets.AzureAppService_PublishProfile_9b1250f038794dc2ab42410c9e276519 }}
         package: .
