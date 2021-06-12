@@ -3,6 +3,8 @@
 @inject IJSRuntime _jsRuntime;
 @inject NavigationManager _navManager;
 @implements IDisposable;
+@using Microsoft.Extensions.Configuration;
+@inject IConfiguration _configuration;
 
 <div class="sidebar">
     @if ((Listings != null && Listings.Count != 0) && !ShowDetails)
@@ -50,7 +52,7 @@
         if (firstRender)
         {
             _objectReference = DotNetObjectReference.Create(this);
-            await _jsRuntime.InvokeVoidAsync("mapbox.init", _objectReference);
+            await _jsRuntime.InvokeVoidAsync("mapbox.init", _objectReference, $"{_configuration["ApiUrl"]}/listings?type=geojson");
         }
     }
 

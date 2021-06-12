@@ -1,5 +1,5 @@
 window.mapbox = {
-    init: (dotnetReference) => {
+    init: (dotnetReference, dataUrl) => {
         mapboxgl.accessToken = 'pk.eyJ1IjoieW9ycmljayIsImEiOiJja29hOTdiZ3MwNDlvMndvZGEwYzdqdGF6In0.DRd1vqbAUBiSpMymkFNRpw';
         const map = new mapboxgl.Map({
             container: 'mapboxMap',
@@ -10,7 +10,7 @@ window.mapbox = {
         map.on('load', () => {
             map.addSource('listings', {
                 type: 'geojson',
-                data: 'https://localhost:5001/listings?type=geojson',
+                data: dataUrl,
                 cluster: true,
                 clusterMaxZoom: 14,
                 clusterRadius: 50
