@@ -1,7 +1,9 @@
+let map;
+
 window.mapbox = {
     init: (dotnetReference, dataUrl) => {
         mapboxgl.accessToken = 'pk.eyJ1IjoieW9ycmljayIsImEiOiJja29hOTdiZ3MwNDlvMndvZGEwYzdqdGF6In0.DRd1vqbAUBiSpMymkFNRpw';
-        const map = new mapboxgl.Map({
+        map = new mapboxgl.Map({
             container: 'mapboxMap',
             style: 'mapbox://styles/yorrick/ckoaamj2t67mq18tefempkihb',
             center: [4.902318081500628, 52.37851665631294],
@@ -80,5 +82,8 @@ window.mapbox = {
                 map.getCanvas().style.cursor = '';
             });
         })
+    },
+    updateData: url => {
+        map.getSource('listings').setData(url);
     }
 }

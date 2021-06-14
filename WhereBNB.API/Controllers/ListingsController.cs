@@ -36,7 +36,7 @@ namespace WhereBNB.API.Controllers
         {
             if (parameters.Type == "geojson")
             {
-                return Ok(await GetListingsFeatureCollection());
+                return Ok(await GetListingsFeatureCollection(parameters));
             }
 
             if (!parameters.Page.HasValue || !parameters.PageSize.HasValue)
@@ -63,9 +63,9 @@ namespace WhereBNB.API.Controllers
             return Ok(listing);
         }
 
-        private async Task<FeatureCollection> GetListingsFeatureCollection()
+        private async Task<FeatureCollection> GetListingsFeatureCollection(ListingParameters parameters)
         {
-            var listings = await SummaryListingRepository.GetAll();
+            var listings = await ListingRepository.Get(parameters);
             List<Feature> features = new();
             FeatureCollection featureCollection = new(features);
 

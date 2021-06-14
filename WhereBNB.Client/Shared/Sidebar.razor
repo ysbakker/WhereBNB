@@ -90,6 +90,8 @@
         var listingCount = await Client.GetFromJsonAsync<double>($"listings{CreateQueryString(ListingParameters, true)}");
         MaxPage = (int)Math.Ceiling(listingCount / _pageSize);
         Listings = await Client.GetFromJsonAsync<List<SummaryListing>>($"listings{CreateQueryString(filters)}");
+        await _jsRuntime.InvokeVoidAsync("mapbox.updateData", $"{_configuration["ApiUrl"]}/listings{CreateQueryString(filters, true)}&type=geojson");
+
         StateHasChanged();
     }
 
