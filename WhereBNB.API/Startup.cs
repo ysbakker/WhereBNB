@@ -35,6 +35,8 @@ namespace WhereBNB.API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMemoryCache();
+            services.AddResponseCompression();
+            services.AddResponseCaching();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddMicrosoftIdentityWebApi(options =>
                     {
@@ -78,6 +80,9 @@ namespace WhereBNB.API
                     .AllowAnyHeader()
                     .AllowCredentials()
             );
+
+            app.UseResponseCompression();
+            app.UseResponseCaching();
 
             app.UseMiniProfiler();
 

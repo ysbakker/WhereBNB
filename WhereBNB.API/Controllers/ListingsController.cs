@@ -31,6 +31,7 @@ namespace WhereBNB.API.Controllers
             SummaryListingRepository = summaryListingRepository;
         }
 
+        [ResponseCache(Duration = 60, VaryByQueryKeys = new[] { "*" })]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] ListingParameters parameters)
         {
@@ -55,6 +56,7 @@ namespace WhereBNB.API.Controllers
             }
         }
 
+        [ResponseCache(Duration = 60, VaryByQueryKeys = new[] { "*" })]
         [HttpGet("{id:int}")]
         public async Task<IActionResult> Get(int id)
         {
