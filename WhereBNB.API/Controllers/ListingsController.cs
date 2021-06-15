@@ -65,7 +65,7 @@ namespace WhereBNB.API.Controllers
 
         private async Task<FeatureCollection> GetListingsFeatureCollection(ListingParameters parameters)
         {
-            var listings = await ListingRepository.Get(parameters);
+            var listings = await ListingRepository.GetGeoData(parameters);
             List<Feature> features = new();
             FeatureCollection featureCollection = new(features);
 

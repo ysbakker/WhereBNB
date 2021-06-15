@@ -19,6 +19,13 @@ namespace WhereBNB.API.Repositories
             return await CreateQuery(p).OrderBy(l => l.Name).ToListAsync();
         }
 
+        public async Task<IEnumerable<ListingGeoData>> GetGeoData(ListingParameters p)
+        {
+            return await CreateQuery(p)
+                .Select(e => new ListingGeoData{Id = e.Id, Latitude = e.Latitude, Longitude = e.Longitude})
+                .ToListAsync();
+        }
+
         public async Task<int> Count(ListingParameters p)
         {
             return await CreateQuery(p).OrderBy(l => l.Name).CountAsync();
